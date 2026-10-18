@@ -1,0 +1,50 @@
+# food-sc-license-checker — 完整文本
+
+本文件为 llms.txt 标准的「完整版」，供长上下文模型一次性读取本仓的完整说明。
+
+## 这是什么
+
+`food-sc-license-checker` 是 SynomosAI 平台的一个行业接入域声明仓（domain id `food`，profile `domain/1.0`，当前状态 `RESERVED`，占位时间 2026-09-12）。它把「这个食品能不能生产、追溯链全不全」拆成可核验的属性，让 AI 只做提示，不下安全结论。
+
+一句话：食品生产许可（SC）/ 追溯 / 添加剂合规的出处链核验，checker 只出示、不下食品安全结论。
+
+## 解决什么问题
+
+1. 食品生产许可按类别核发，追溯体系与添加剂使用是监管重点。
+2. AI 容易越权替人下「可食用 / 安全无害 / 符合食安标准」结论——本仓用红线 + gate-map 把这种输出挡掉。
+3. 食品类别与许可明细须以监管证件为准，不能 AI 推定。
+
+## 属性（5 个）
+
+- `food.production_license`：licensed/pending/expired/revoked/not_required
+- `food.product_category`（string）：许可载明的食品类别
+- `food.traceability_status`：full/partial/absent
+- `food.additive_use`：compliant/over_limit/out_of_scope/undeclared/unknown
+- `food.cold_chain_status`：compliant/deviation_recorded/not_applicable
+
+## 红线（3 条，机器可读，gate-map 各有阻断规则）
+
+1. 食品类别与许可明细须以监管证件载明内容为准，AI 不得推定。
+2. 不得输出「可食用」「安全无害」「符合食品安全标准」等结论性表述。
+3. 不得建议超范围超限量使用添加剂或规避检验。
+
+## 快速开始
+
+```bash
+git clone https://github.com/SynomosAI/food-sc-license-checker.git
+cd food-sc-license-checker
+python -m json.tool domain.manifest.json > /dev/null   # 校验 JSON 合法
+```
+
+## 触发词
+
+食品生产许可证 SC / 食品类别明细 / 食品追溯体系 / 食品添加剂 GB 2760 / 冷链温控偏差 / 这个食品安全吗（注：本域不下安全结论，只出示出处链）。
+
+## 许可与权利
+
+代码与配置按 MIT 许可使用（见根目录 LICENSE，© 2026 SynomosAI）。文档知识版权归 SynomosAI 所有。checker 输出仅出示与核验属性的出处链，不构成对主体资质或事项合规性的专业结论；结论权归本域检验机构、监管方与生产经营者本人。
+
+## 链接
+
+- 仓库: https://github.com/SynomosAI/food-sc-license-checker
+- 四件套: domain.manifest.json / gate-map.json / privacy.json / checker.io.json
